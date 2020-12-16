@@ -13,4 +13,11 @@ public class GameClient extends JComponent {
         screenHeight=height;
         this.setPreferredSize(new Dimension(width,height));
     }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+//        super.paintComponent(g);
+        g.drawImage(new ImageIcon("assets\\images\\itankD.png").getImage(),200,100,null);
+    }
+
 }

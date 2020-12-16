@@ -10,5 +10,7 @@ public class TankWar {
         jf.setLocation(100,200);
         jf.pack();
         jf.setVisible(true);
+
+        gameClient.repaint();
     }
 }
