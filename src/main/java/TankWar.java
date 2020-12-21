@@ -25,7 +25,6 @@ public class TankWar {
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
                 gameClient.keyPress(e);
-                System.out.println(e.getKeyCode());
             }
 
 
