@@ -20,13 +20,13 @@ public class Wall {
     }
 
     public void draw(Graphics g){
-        if(horizon){
+        if(!horizon){
             for(int i = 0 ;i<brick;i++){
                 g.drawImage(img,x+ img.getWidth(null)*i,y,null);
             }
         }else{
             for(int i = 0 ;i<brick;i++){
-                g.drawImage(img,x,y+img.getHeight(null),null);
+                g.drawImage(img,x,y+img.getHeight(null)*i,null);
             }
         }
     }

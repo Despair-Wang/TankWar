@@ -47,7 +47,7 @@ public class GameClient extends JComponent {
 
     public void init() {
         int posX = (screenWidth - 48) / 2;
-        playerTank = new Tank(getX() + posX, getY() + 100, Direction.DOWN);
+        playerTank = new Tank(getX() + posX, getY() + 80, Direction.DOWN);
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
@@ -55,9 +55,9 @@ public class GameClient extends JComponent {
             }
         }
 
-        walls.add(new Wall(80, 200, true, 15));
-        walls.add(new Wall(668, 200, true, 15));
-        walls.add(new Wall(100, 100, false, 17));
+        walls.add(new Wall(100, 240, true, 11));
+        walls.add(new Wall(674, 240, true, 11));
+        walls.add(new Wall(100, 150, false, 19));
 
     }
 
