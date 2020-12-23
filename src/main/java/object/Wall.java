@@ -3,30 +3,24 @@ package object;
 import javax.swing.*;
 import java.awt.*;
 
-public class Wall {
-    private int x;
-    private int y;
+public class Wall extends GameObject{
     private boolean horizon;
     private int brick;
-    private Image img;
 
-    public Wall(int x, int y, boolean horizon, int brick){
-        this.x = x;
-        this.y = y;
+    public Wall(int x, int y, boolean horizon, int brick,Image[] img){
+        super(x,y,img);
         this.horizon = horizon;
         this.brick = brick;
-
-        img = new ImageIcon("assets/images/brick.png").getImage();
     }
 
     public void draw(Graphics g){
         if(!horizon){
             for(int i = 0 ;i<brick;i++){
-                g.drawImage(img,x+ img.getWidth(null)*i,y,null);
+                g.drawImage(image[0],x+ width*i,y,null);
             }
         }else{
             for(int i = 0 ;i<brick;i++){
-                g.drawImage(img,x,y+img.getHeight(null)*i,null);
+                g.drawImage(image[0],x,y+height*i,null);
             }
         }
     }
