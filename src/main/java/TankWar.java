@@ -1,15 +1,16 @@
-import object.Tank;
-
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class TankWar {
+    private static GameClient gameClient;
+
+    public static GameClient getGameClient(){
+        return gameClient;
+    }
     public static void main(String[] args) {
         JFrame jf = new JFrame("TankWar");
-        GameClient gameClient = new GameClient(800,600);
+        gameClient = new GameClient(800,600);
         jf.add(gameClient);
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jf.setLocation(100,100);

@@ -15,6 +15,18 @@ public class GameClient extends JComponent {
     private ArrayList<Tank> enemyTank = new ArrayList<>();
     private ArrayList<Wall> walls = new ArrayList<>();
 
+    public ArrayList<GameObject> getGameObjects() {
+        return gameObjects;
+    }
+
+    public ArrayList<Tank> getEnemyTank() {
+        return enemyTank;
+    }
+
+    public ArrayList<Wall> getWalls() {
+        return walls;
+    }
+
     GameClient() {
         this.setPreferredSize(new Dimension(800, 600));
     }
@@ -23,8 +35,6 @@ public class GameClient extends JComponent {
         screenWidth = width;
         screenHeight = height;
         this.setPreferredSize(new Dimension(width, height));
-//        int posX = (screenWidth-48)/2;
-//        playerTank = new Tank(getX()+posX, getY()+100, Direction.DOWN);
 
         init();
 
@@ -82,15 +92,6 @@ public class GameClient extends JComponent {
         for (GameObject object : gameObjects){
             object.draw(g);
         }
-
-//        for (Tank tank : enemyTank) {
-//            tank.draw(g);
-//        }
-//        for (Wall wall : walls) {
-//            wall.draw(g);
-//        }
-//        playerTank.draw(g);
-
     }
 
     public void Start() {
@@ -137,5 +138,13 @@ public class GameClient extends JComponent {
                 dirs[3] = false;
                 break;
         }
+    }
+
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
     }
 }

@@ -1,9 +1,9 @@
-package object;
+import object.Direction;
+import object.GameObject;
 
-import javax.swing.*;
 import java.awt.*;
 
-public class Tank extends GameObject{
+public class Tank extends GameObject {
 
     private int speed;
     private Direction direction;
@@ -54,6 +54,9 @@ public class Tank extends GameObject{
     }
 
     public void move() {
+        oldX = x;
+        oldY = y;
+
         switch (direction) {
             case UP:
                 y -= speed;
@@ -83,6 +86,31 @@ public class Tank extends GameObject{
                 y += speed;
                 x += speed;
                 break;
+        }
+        collision();
+
+    }
+
+    void collision(){
+        if(x<0){
+            x=0;
+        }else if(x> TankWar.getGameClient().getScreenWidth()-width){
+            x = TankWar.getGameClient().getScreenWidth()-width;
+        }
+
+        if(y<0){
+            y=0;
+        } else if(y> TankWar.getGameClient().getScreenHeight()-height){
+            y = TankWar.getGameClient().getScreenHeight()-height;
+        }
+
+        for(Wall wall : TankWar.getGameClient().getWalls()){
+            if(getRectangle().intersects(wall.getRectangle())){
+                System.out.println("hit");
+                x = oldX;
+                y = oldY;
+                return;
+            }
         }
     }
 

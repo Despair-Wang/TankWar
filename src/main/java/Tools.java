@@ -1,5 +1,3 @@
-package object;
-
 import javax.swing.*;
 import java.awt.*;
 

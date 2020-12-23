@@ -1,9 +1,8 @@
-package object;
+import object.GameObject;
 
-import javax.swing.*;
 import java.awt.*;
 
-public class Wall extends GameObject{
+public class Wall extends GameObject {
     private boolean horizon;
     private int brick;
 
@@ -14,7 +13,7 @@ public class Wall extends GameObject{
     }
 
     public void draw(Graphics g){
-        if(!horizon){
+        if(horizon){
             for(int i = 0 ;i<brick;i++){
                 g.drawImage(image[0],x+ width*i,y,null);
             }
@@ -23,5 +22,10 @@ public class Wall extends GameObject{
                 g.drawImage(image[0],x,y+height*i,null);
             }
         }
+    }
+
+    @Override
+    public Rectangle getRectangle() {
+        return horizon? new Rectangle(x,y ,brick*width,height):new Rectangle(x,y,width,brick*height);
     }
 }
