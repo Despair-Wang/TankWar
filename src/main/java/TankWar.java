@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -35,5 +36,12 @@ public class TankWar {
                 gameClient.keyReleased(e);
             }
         });
+
+        new Timer(5, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameClient.addBackgroundY();
+            }
+        }).start();
     }
 }

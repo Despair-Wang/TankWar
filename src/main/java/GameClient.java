@@ -2,8 +2,12 @@ import object.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Timer;
 
 public class GameClient extends JComponent {
     private int screenWidth;
@@ -12,19 +16,13 @@ public class GameClient extends JComponent {
     private Tank playerTank;
     private boolean shift;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
-    private ArrayList<Tank> enemyTank = new ArrayList<>();
-    private ArrayList<Wall> walls = new ArrayList<>();
+    private static int backX;
+    private static int backY;
+    private Image[] bulletImage = new Image[8];
+    private Image[] brickImage = {Tools.getImage("brick.png")};
 
     public ArrayList<GameObject> getGameObjects() {
         return gameObjects;
-    }
-
-    public ArrayList<Tank> getEnemyTank() {
-        return enemyTank;
-    }
-
-    public ArrayList<Wall> getWalls() {
-        return walls;
     }
 
     GameClient() {
@@ -51,7 +49,10 @@ public class GameClient extends JComponent {
                 }
             }
         }).start();
+    }
 
+    public void addObject(GameObject object){
+        gameObjects.add(object);
     }
 
     public void init() {
@@ -59,39 +60,48 @@ public class GameClient extends JComponent {
         Image[] iTankImage = new Image[8];
         Image[] eTankImage = new Image[8];
         String[] fileSubName = {"U","D","L","R","LU","RU","LD","RD"};
-        Image[] brickImage = {Tools.getImage("brick.png")};
+//        Image[] brickImage = {Tools.getImage("brick.png")};
 
         for(int i =0 ;i<iTankImage.length;i++){
             iTankImage[i] = Tools.getImage("itank" + fileSubName[i] + ".png");
             eTankImage[i] = Tools.getImage("etank" + fileSubName[i] + ".png");
+            bulletImage[i] = Tools.getImage("missile" + fileSubName[i] + ".png");
         }
 
-        playerTank = new Tank(getX() + posX, getY() + 80, Direction.DOWN,iTankImage);
+        playerTank = new Tank(getX() + posX, getY() + getScreenHeight()-50, Direction.UP,iTankImage);
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
-                enemyTank.add(new Tank(250 + j * 80, 300 + i * 80, Direction.UP, true,eTankImage));
+                gameObjects.add(new Tank(220 + j * 100, 50 + i * 100, Direction.DOWN, true,eTankImage));
             }
         }
-
-        walls.add(new Wall(100, 240, true, 11,brickImage));
-        walls.add(new Wall(674, 240, true, 11,brickImage));
-        walls.add(new Wall(100, 150, false, 19,brickImage));
+        for (int i = 0; i <11 ; i++){
+            gameObjects.add(new Wall(100, 40 + i * brickImage[0].getHeight(null), false, 1,brickImage));
+            gameObjects.add(new Wall(674, 40 + i * brickImage[0].getHeight(null), false, 1,brickImage));
+        }
+        for(int i = 0; i<8 ; i++){
+            gameObjects.add(new Wall(250 + i * brickImage[0].getWidth(null), 400, true, 1,brickImage));
+        }
 
         gameObjects.add(playerTank);
-        gameObjects.addAll(enemyTank);
-        gameObjects.addAll(walls);
+
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-//        super.paintComponent(g);
-//        g.setColor(Color.BLACK);
-        g.drawImage(Tools.getImage("sah7.jpeg"), 0, 0, screenWidth, screenHeight, null);
-//        g.fillRect(0,0,screenWidth,screenHeight);
+        g.drawImage(Tools.getImage("sah7.jpeg"), 0, backY, screenWidth, screenHeight, null);
+        g.drawImage(Tools.getImage("sah7.jpeg"), 0, backY-screenHeight, screenWidth, screenHeight, null);
         for (GameObject object : gameObjects){
             object.draw(g);
         }
+
+        Iterator<GameObject> it = gameObjects.iterator();
+        while (it.hasNext()){
+            if(!it.next().isAlive()){
+                it.remove();
+            }
+        }
+//        System.out.println(gameObjects.size());
     }
 
     public void Start() {
@@ -114,7 +124,10 @@ public class GameClient extends JComponent {
                 dirs[3] = true;
                 break;
             case KeyEvent.VK_SHIFT:
-                playerTank.setSpeed(20);
+                playerTank.setSpeed(30);
+                break;
+            case KeyEvent.VK_SPACE:
+                playerTank.fire();
                 break;
         }
     }
@@ -146,5 +159,21 @@ public class GameClient extends JComponent {
 
     public int getScreenHeight() {
         return screenHeight;
+    }
+
+    public Image[] getBulletImage() {
+        return bulletImage;
+    }
+
+    public Image[] getBrickImage() {
+        return brickImage;
+    }
+
+    public void addBackgroundY(){
+        if(backY>=screenHeight){
+            backY = 0;
+        } else {
+            backY++;
+        }
     }
 }
