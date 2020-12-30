@@ -5,10 +5,11 @@ import java.awt.*;
 
 public class Tank extends GameObject {
 
-    private int speed;
+    protected int speed;
     protected Direction direction;
-    private boolean[] dirs = new boolean[4];
-    private boolean enemy;
+    protected boolean[] dirs = new boolean[4];
+    protected boolean enemy;
+    protected int hp;
 
     public Tank(int x, int y, Direction direction,Image[] image) {
         this(x,y,direction,false,image);
@@ -19,6 +20,7 @@ public class Tank extends GameObject {
         this.direction = direction;
         speed = 5;
         this.enemy = enemy;
+        hp = 1;
     }
 
     public int getX() {
@@ -114,43 +116,32 @@ public class Tank extends GameObject {
         return collision;
     }
 
-    void collision(){
-//        if(x<0){
-//            x=0;
-//        }else if(x> TankWar.getGameClient().getScreenWidth()-width){
-//            x = TankWar.getGameClient().getScreenWidth()-width;
-//        }
-//
-//        if(y<0){
-//            y=0;
-//        } else if(y> TankWar.getGameClient().getScreenHeight()-height){
-//            y = TankWar.getGameClient().getScreenHeight()-height;
-//        }
-        if(collisionBound()){
-            return;
-        }
+    public boolean collisionObject(){
         for(GameObject object : TankWar.getGameClient().getGameObjects()){
             if(object instanceof Bullet && ((Bullet)object).isEnemy() == isEnemy()){
                 continue;
             }
 
-//            if(object instanceof Bullet && ((Bullet)object).isEnemy() != isEnemy()){
-//                System.out.println("HIT");
-//                alive = false;
-//                return;
-//            }
-//            if(object instanceof Tank && ((Tank)object).isEnemy() != isEnemy()){
-//                System.out.println("HIT");
-//                alive = false;
-//                return;
-//            }
-
             if(object != this && getRectangle().intersects(object.getRectangle())){
-                x = oldX;
-                y = oldY;
-                return;
+                return true;
             }
         }
+        return false;
+    }
+
+    public boolean collision(){
+        boolean isCollision = collisionBound();
+
+        if(!isCollision){
+            isCollision = collisionObject();
+        }
+
+        if(isCollision){
+            x = oldX;
+            y = oldY;
+            return true;
+        }
+        return false;
     }
 
     public void fire(){
@@ -207,5 +198,15 @@ public class Tank extends GameObject {
             }
         }
         return true;
+    }
+
+    public void getHurt(int damage){
+        hp -= damage;
+        if(hp <= 0){
+            alive = false;
+        }
+//        if(hp - damage <= 0){
+//            alive = false;
+//        }
     }
 }

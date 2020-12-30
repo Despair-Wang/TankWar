@@ -7,21 +7,23 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Timer;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameClient extends JComponent {
     private int screenWidth;
     private int screenHeight;
     private static boolean start;
-    private Tank playerTank;
+    private PlayerTank playerTank;
     private boolean shift;
-    private ArrayList<GameObject> gameObjects = new ArrayList<>();
+    private CopyOnWriteArrayList<GameObject> gameObjects = new CopyOnWriteArrayList<>();
     private static int backX;
     private static int backY;
     private Image[] bulletImage = new Image[8];
     private Image[] brickImage = {Tools.getImage("brick.png")};
+    private static int charge = 0;
+    private static boolean chargeOn = false;
 
-    public ArrayList<GameObject> getGameObjects() {
+    public CopyOnWriteArrayList<GameObject> getGameObjects() {
         return gameObjects;
     }
 
@@ -68,11 +70,11 @@ public class GameClient extends JComponent {
             bulletImage[i] = Tools.getImage("missile" + fileSubName[i] + ".png");
         }
 
-        playerTank = new Tank(getX() + posX, getY() + getScreenHeight()-50, Direction.UP,iTankImage);
+        playerTank = new PlayerTank(getX() + posX, getY() + getScreenHeight()-50, Direction.UP,iTankImage);
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
-                gameObjects.add(new Tank(220 + j * 100, 50 + i * 100, Direction.DOWN, true,eTankImage));
+                gameObjects.add(new EnemyTank(220 + j * 100, 50 + i * 100, Direction.DOWN, true,eTankImage));
             }
         }
         for (int i = 0; i <11 ; i++){
@@ -95,13 +97,11 @@ public class GameClient extends JComponent {
             object.draw(g);
         }
 
-        Iterator<GameObject> it = gameObjects.iterator();
-        while (it.hasNext()){
-            if(!it.next().isAlive()){
-                it.remove();
+        for(GameObject object : gameObjects){
+            if(!object.isAlive()){
+                gameObjects.remove(object);
             }
         }
-//        System.out.println(gameObjects.size());
     }
 
     public void Start() {
@@ -128,6 +128,11 @@ public class GameClient extends JComponent {
                 break;
             case KeyEvent.VK_SPACE:
                 playerTank.fire();
+                chargeOn = true;
+                charge();
+                break;
+            case KeyEvent.VK_A:
+                playerTank.superFire();
                 break;
         }
     }
@@ -150,6 +155,30 @@ public class GameClient extends JComponent {
             case KeyEvent.VK_RIGHT:
                 dirs[3] = false;
                 break;
+            case KeyEvent.VK_SPACE:
+                if(charge>3){
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            playerTank.superFire();
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            playerTank.superFire();
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            playerTank.superFire();
+                        }
+                    }).start();
+                }
+                charge();
+                chargeOn = false;
+                break;
         }
     }
 
@@ -167,6 +196,20 @@ public class GameClient extends JComponent {
 
     public Image[] getBrickImage() {
         return brickImage;
+    }
+
+    public void charge(){
+        new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(chargeOn) {
+                    charge++;
+                    System.out.println("Charge On");
+                }else{
+                    charge = 0;
+                }
+            }
+        }).start();
     }
 
     public void addBackgroundY(){
